@@ -1,9 +1,0 @@
-{
-    "name": "botble/square",
-    "description": "Rss feed",
-    "type": "package",
-    "require": {
-        "botble/theme": "*@dev",
-        "spatie/laravel-feed": "^2.7|^3.1"
-    }
-}
