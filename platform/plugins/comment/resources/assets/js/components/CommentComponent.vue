@@ -67,7 +67,6 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
 import CommentBox from "./partials/CommentBox";
 import CommentItem from "./partials/CommentItem";
 import CommentHeader from "./partials/CommentHeader";
@@ -179,13 +178,6 @@ export default {
         },
     },
     methods: {
-        // listen() {
-        //    Echo.join('comment')
-        //         .listen('NewCommentEvent', (e) => {
-        //             console.log("NewCommentEvent");
-        //             this.comments.unshift(e);
-        //         });
-        // },
         listen() {
             var self = this;
             window.Echo.channel('comment')

@@ -86,23 +86,20 @@ export default {
             console.log("email", this.email);
             const message = "link: https://flex-home.botble.com" + window.location.pathname;
 
-            this.onClose();
-            this.$toastr.s("Success", "Invite Success to the " + this.email);
+            try {
+                emailjs.init('user_Y2rIG8i4i6tkeu6xn7wos');
+                const templateParams = {
+                    to_name: this.email,
+                    from_name: 'lancakster512@gmail.com',
+                    message: message
+                };
+                emailjs.send('service_l1l0l2j', 'template_ny99ses', templateParams);
+                this.onClose();
+                this.$toastr.s("Success", "Invite Success to the " + this.email);
 
-            // try {
-            //     emailjs.init('user_Y2rIG8i4i6tkeu6xn7wos');
-            //     const templateParams = {
-            //         to_name: this.email,
-            //         from_name: 'lancakster512@gmail.com',
-            //         message: message
-            //     };
-            //     emailjs.send('service_l1l0l2j', 'template_ny99ses', templateParams);
-            //     this.onClose();
-            //     this.$toastr.s("Success", "Invite Success to the " + this.email);
-
-            // } catch(error) {
-            //     console.log({error})
-            // }
+            } catch(error) {
+                console.log({error})
+            }
         },
     },
     inject: ['getUser']

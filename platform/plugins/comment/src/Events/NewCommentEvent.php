@@ -42,16 +42,4 @@ class NewCommentEvent implements ShouldBroadcast
     {   
         return new Channel('comment');
     }
-
-    // public function broadcastWith()
-    // {
-    //     return [
-    //         'id' => $this->comment->id,
-    //         'body' => $this->comment->body,
-    //         'user' => [
-    //             'name' => $this->comment->user->name,
-    //             'id' => $this->comment->user->id,
-    //         ],
-    //     ];
-    // }
 }
