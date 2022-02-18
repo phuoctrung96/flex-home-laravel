@@ -2370,11 +2370,28 @@ window.http = _service_http__WEBPACK_IMPORTED_MODULE_8__["default"];
     }
   },
   methods: {
+    // listen() {
+    //    Echo.join('comment')
+    //         .listen('NewCommentEvent', (e) => {
+    //             console.log("NewCommentEvent");
+    //             this.comments.unshift(e);
+    //         });
+    // },
     listen: function listen() {
       var _this = this;
 
-      Echo.join('comment').listen('NewCommentEvent', function (e) {
-        _this.comments.unshift(e);
+      var self = this;
+      window.Echo.channel('comment').listen('.Botble\\Comment\\Events\\NewCommentEvent', function (e) {
+        console.log(_this.reactive.userData);
+        console.log(e);
+
+        if (self.reactive.userData.email !== e.commentUser.email) {
+          self.reactive.attrs.count_all += 1;
+
+          if (e.comment.parent_id == "0") {
+            self.comments.unshift(e.comment);
+          }
+        }
       });
     },
     getUser: function getUser(email) {
@@ -3667,22 +3684,20 @@ __webpack_require__.r(__webpack_exports__);
 
       console.log("email", this.email);
       var message = "link: https://flex-home.botble.com" + window.location.pathname;
-
-      try {
-        emailjs_com__WEBPACK_IMPORTED_MODULE_3__["default"].init('user_Y2rIG8i4i6tkeu6xn7wos');
-        var templateParams = {
-          to_name: this.email,
-          from_name: 'lancakster512@gmail.com',
-          message: message
-        };
-        emailjs_com__WEBPACK_IMPORTED_MODULE_3__["default"].send('service_l1l0l2j', 'template_ny99ses', templateParams);
-        this.onClose();
-        this.$toastr.s("Success", "Invite Success to the " + this.email);
-      } catch (error) {
-        console.log({
-          error: error
-        });
-      }
+      this.onClose();
+      this.$toastr.s("Success", "Invite Success to the " + this.email); // try {
+      //     emailjs.init('user_Y2rIG8i4i6tkeu6xn7wos');
+      //     const templateParams = {
+      //         to_name: this.email,
+      //         from_name: 'lancakster512@gmail.com',
+      //         message: message
+      //     };
+      //     emailjs.send('service_l1l0l2j', 'template_ny99ses', templateParams);
+      //     this.onClose();
+      //     this.$toastr.s("Success", "Invite Success to the " + this.email);
+      // } catch(error) {
+      //     console.log({error})
+      // }
     }
   },
   inject: ['getUser']
@@ -28907,7 +28922,12 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_4__["default"]({
   broadcaster: "pusher",
   key: "ac01d8b0ce970cd77c68",
   cluster: "ap3",
-  encrypted: true
+  encrypted: true,
+  auth: {
+    headers: {
+      Authorization: 'Bearer ' + _service_Ls__WEBPACK_IMPORTED_MODULE_3__["default"].get('auth.token')
+    }
+  }
 });
 
 $.fn.serializeData = function (options) {

@@ -88,7 +88,6 @@ class CommentFrontController extends BaseController
             $comment->rated = $commentRatingRepo->getRatingOfArticle($reference, $user);
         }
 
-        // event(new NewCommentEvent($comment, $user));
         broadcast(new NewCommentEvent($comment, $user))->toOthers();
 
         return $this->response->setData($comment);

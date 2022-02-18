@@ -67,7 +67,6 @@
 </template>
 
 <script>
-// import { mapGetters } from "vuex";
 import CommentBox from "./partials/CommentBox";
 import CommentItem from "./partials/CommentItem";
 import CommentHeader from "./partials/CommentHeader";
@@ -180,15 +179,24 @@ export default {
     },
     methods: {
         listen() {
-           Echo.join('comment')
-                .listen('NewCommentEvent', (e) => {
-                    this.comments.unshift(e);
-                });
+            var self = this;
+            window.Echo.channel('comment')
+            .listen('.Botble\\Comment\\Events\\NewCommentEvent', (e) => {
+                console.log(this.reactive.userData);
+                console.log(e);
+                if (self.reactive.userData.email !== e.commentUser.email) {
+                    self.reactive.attrs.count_all += 1;
+                    if(e.comment.parent_id == "0") {
+                        self.comments.unshift(e.comment);
+                    }
+                }
+                
+            });
         },
         getUser(email) {
             console.log("email", email);
-           this.email = email;
-           console.log(this.email);
+            this.email = email;
+            console.log(this.email);
         },
         async onLoginWithGuard(user) {
             this.setSoftLoading(true);

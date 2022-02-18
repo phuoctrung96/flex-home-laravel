@@ -85,6 +85,7 @@ export default {
             }
             console.log("email", this.email);
             const message = "link: https://flex-home.botble.com" + window.location.pathname;
+
             try {
                 emailjs.init('user_Y2rIG8i4i6tkeu6xn7wos');
                 const templateParams = {

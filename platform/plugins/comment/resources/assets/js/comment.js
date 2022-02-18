@@ -10,6 +10,11 @@ window.Echo = new Echo({
     key: "ac01d8b0ce970cd77c68",
     cluster: "ap3",
     encrypted: true,
+    auth: {
+        headers: {
+            Authorization: 'Bearer ' + Ls.get('auth.token')
+        },
+    },
 });
 
 $.fn.serializeData = function(options){var a=this,r={},i={},u=/[a-zA-Z0-9_]+|(?=\[\])/g,h=/^$/,c=/^\d+$/,s=/^[a-zA-Z0-9_]+$/;return this.build=function(t,i,e){return t[i]=e,t},this.push_counter=function(t){return void 0===i[t]&&(i[t]=0),i[t]++},$.each($(this).getFormData(options),function(){for(var t,i=this.name.match(u),e=this.value,n=this.name;void 0!==(t=i.pop());)n=n.replace(new RegExp("\\["+t+"\\]$"),""),t.match(h)?e=a.build([],a.push_counter(n),e):t.match(c)?e=a.build([],t,e):t.match(s)&&(e=a.build({},t,e));r=$.extend(!0,r,e)}),r};
