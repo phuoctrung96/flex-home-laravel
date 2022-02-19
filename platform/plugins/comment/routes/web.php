@@ -47,3 +47,5 @@ Route::group(['namespace' => 'Botble\Comment\Http\Controllers', 'middleware' => 
 
     Route::post('comments/login/current', 'CommentController@cloneUser')->name('comment.current-user');
 });
+
+

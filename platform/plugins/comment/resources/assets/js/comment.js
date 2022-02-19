@@ -1,6 +1,10 @@
 import CommentComponent from './components/CommentComponent';
 import Vue from 'vue';
 import VueToastr from "vue-toastr";
+import axios from 'axios';
+import VueAxios from 'vue-axios'
+import VueSocialauth from 'vue-social-auth'
+
 import { linkify } from './components/helpers';
 import Ls from './service/Ls';
 import Echo from "laravel-echo";
@@ -42,6 +46,19 @@ Vue.prototype.linkify = linkify;
 
 Vue.component('comment', CommentComponent);
 Vue.use(VueToastr);
+
+Vue.use(VueAxios, axios)
+Vue.use(VueSocialauth, {
+
+  providers: {
+    facebook: {
+      clientId: '200210032318300',
+      secret: 'ea107f81006663f7a381e4b7918031ec',
+      redirectUri: '/auth/{provider}/callback' // Your client app URL
+    }
+  }
+});
+
 const app = new Vue({
-    el: '#bb-comment'
+    el: '#bb-comment',
 });

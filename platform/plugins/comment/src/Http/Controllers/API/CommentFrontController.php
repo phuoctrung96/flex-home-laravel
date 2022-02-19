@@ -7,12 +7,15 @@ namespace Botble\Comment\Http\Controllers\API;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Comment\Models\Comment;
+use Botble\Comment\Models\CommentUser;
 use Botble\Comment\Repositories\Interfaces\CommentInterface;
 use Botble\Comment\Repositories\Interfaces\CommentLikeInterface;
 use Botble\Comment\Repositories\Interfaces\CommentRatingInterface;
 use Botble\Comment\Repositories\Interfaces\CommentRecommendInterface;
 use Botble\Comment\Repositories\Interfaces\CommentUserInterface;
 use Botble\Comment\Events\NewCommentEvent;
+use Botble\Comment\Events\NewLikeEvent;
+use Botble\Comment\Events\DeleteCommentEvent;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -81,6 +84,7 @@ class CommentFrontController extends BaseController
             'comment',
             'parent_id',
             'rating',
+	    'status'
         ]));
 
         if (setting('plugin_comment_rating', true) && $comment) {
@@ -105,6 +109,7 @@ class CommentFrontController extends BaseController
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 5);
         $sort = $request->input('sort', 'newest');
+        $email = $request->input('email', '');
 
         [$comments, $attrs] = $this->commentRepository->getComments($reference, $parentId, $page, $limit, $sort);
 
@@ -155,7 +160,7 @@ class CommentFrontController extends BaseController
                 ->setError()
                 ->setMessage(__('You don\'t have permission with this comment'));
         }
-
+        broadcast(new DeleteCommentEvent($comment));
         $this->commentRepository->delete($comment);
 
         return $this->response
@@ -175,7 +180,7 @@ class CommentFrontController extends BaseController
         $comment = $this->commentRepository->getFirstBy(compact('id'));
 
         $liked = $commentLikeRepo->likeThisComment($comment, $user);
-
+        broadcast(new NewLikeEvent($liked, $comment->id, $comment->like_count));
         return $this->response
             ->setData(compact('liked'))
             ->setMessage($liked ? __('Like successfully') : __('Unlike successfully'));
@@ -268,5 +273,14 @@ class CommentFrontController extends BaseController
             'reference'         => 'required',
             'comment'           => 'required|min:5'
         ]);
+    }
+    public function usercheck(Request $request) {
+        $email = $request->input('data');
+        if (CommentUser::where('email', $email)->exists()) {
+            return $this->response->setData(true);
+        }
+        if (CommentUser::where('email', $email)->doesntExist()) {
+            return $this->response->setData(false);
+        }
     }
 }

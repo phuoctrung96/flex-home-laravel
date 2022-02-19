@@ -34,7 +34,7 @@ class CommentUser extends Authenticatable
         'password',
         'user_type',
         'avatar_id',
-
+        'facebook_id'
     ];
 
     protected $appends = [

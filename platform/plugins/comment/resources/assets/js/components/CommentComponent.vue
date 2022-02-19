@@ -6,7 +6,7 @@
             :has-rating="hasRating"
         />
         <div class="bb-loading" v-if="isLoading"></div>
-        <div class="bb-comment-list" v-if="!isLoading">
+        <div class="bb-comment-list" v-if="this.reactive.userData && !isLoading">
             <comment-item
                 v-for="(comment, index) in comments"
                 :key="comment.id"
@@ -62,7 +62,6 @@
             <div class="bb-loading mini"></div>
         </div>
 
-        <comment-footer v-if="copyright" :text="copyright" />
     </div>
 </template>
 
@@ -71,7 +70,6 @@ import CommentBox from "./partials/CommentBox";
 import CommentItem from "./partials/CommentItem";
 import CommentHeader from "./partials/CommentHeader";
 import ConfirmDialog from "./partials/ConfirmDialog";
-import CommentFooter from "./partials/CommentFooter";
 import LoginForm from "./partials/LoginForm";
 import InviteForm from "./partials/InviteForm";
 import Http from "../service/http";
@@ -110,7 +108,6 @@ export default {
         ConfirmDialog,
         LoginForm,
         InviteForm,
-        CommentFooter,
     },
     props: {
         reference: {
@@ -182,8 +179,6 @@ export default {
             var self = this;
             window.Echo.channel('comment')
             .listen('.Botble\\Comment\\Events\\NewCommentEvent', (e) => {
-                console.log(this.reactive.userData);
-                console.log(e);
                 if (self.reactive.userData.email !== e.commentUser.email) {
                     self.reactive.attrs.count_all += 1;
                     if(e.comment.parent_id == "0") {

@@ -13,8 +13,22 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
         ], function () {
             Route::post('login', 'LoginController@login')->name('login');
             Route::post('register', 'RegisterController@register')->name('register');
+
+            // socail auth
+            Route::post('sociallogin/{provider}', 'AuthController@SocialSignup');
+            Route::post('auth/{provider}', 'AuthController@callbackFromSocialAuth')->where('vue', '.*');
+            Route::post('auth/{provider}/callback', 'AuthController@callbackFromSocialAuth')->where('vue', '.*');
         });
 
+        // Route::group([
+        //     'middleware' => ['web'],
+        //     'prefix' => 'facebook',
+        //     'as' => 'facebook.',
+        // ], function () {
+        //     Route::get('auth', 'FaceBookController@facebookRedirect')->name('auth');
+        //     Route::get('callback', 'FaceBookController@callbackFromFacebook');
+        // });
+        
         Route::group([
             'as' => 'comment.',
         ], function () {
@@ -38,5 +52,7 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             Route::get('getComments', 'CommentFrontController@getComments')->name('list');
         });
 
+
     });
+    
 }
