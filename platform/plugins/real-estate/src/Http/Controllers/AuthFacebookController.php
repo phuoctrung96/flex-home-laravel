@@ -21,7 +21,7 @@ class AuthFacebookController extends Controller
 
     public function __construct(AccountInterface $accountRepository)
     {
-        $this->accountRepository = $accountRepository;    
+        $this->accountRepository = $accountRepository;
     }
 
     public function redirect()
@@ -40,8 +40,9 @@ class AuthFacebookController extends Controller
     }
 
     public function callback()
-    {       
-        try { 
+    {
+        // dd(Socialite::driver('facebook')->user());
+        try {
             $user = Socialite::driver('facebook')->user();
             $saveUser = [
                 'facebook_id' => $user->getId(),
@@ -51,10 +52,16 @@ class AuthFacebookController extends Controller
                 'email' => $user->getEmail(),
                 'password' => Hash::make($user->getName().'@'.$user->getId())
             ];
-            //$this->accountRepository->createOrUpdate($saveUser,['facebook_id' => $user->getId()]); 
-            //$this->accountRepository->createOrUpdate($saveUser); 
-            DB::table('re_accounts')->updateOrCreate(['facebook_id' => $user->getId()], $saveUser);
-            $this->guard()->login($saveUser);           
+            //$this->accountRepository->createOrUpdate($saveUser,['facebook_id' => $user->getId()]);
+            //$this->accountRepository->createOrUpdate($saveUser);
+            DB::table('re_accounts')
+                ->updateOrInsert([
+                    'facebook_id' => $user->getId(),
+                    'type' => 2], $saveUser);
+            
+            $this->guard()->login($this->accountRepository->getFirstBy(['facebook_id' => $user->getId()]));
+
+            // $this->guard()->login($saveUser);
             //auth()->login($saveUser);
             return redirect()->to('/projects');
         } catch (\Throwable $th) {

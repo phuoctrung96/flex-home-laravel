@@ -31,9 +31,14 @@ return [
     ],
 
     'facebook' => [
-        'client_id' => '679273986756373',
-        'client_secret' => 'e5426fd0d2cf2112c40b379072367608',
-        'redirect' => 'https://listingpages.realestate/callback/',
+        // 'client_id' => '679273986756373',
+        // 'client_secret' => 'e5426fd0d2cf2112c40b379072367608',
+        // 'redirect' => 'https://listingpages.realestate/callback/',
+
+        /** test keys */
+        'client_id' => '498972108489253',
+        'client_secret' => 'aa3ff5cd8a9cbcd661dd0a2d5f9edd35',
+        'redirect' => 'https://flex-home-laravel.test/callback/',
     ],
 
 ];
