@@ -4,11 +4,12 @@ import VueToastr from "vue-toastr";
 import { linkify } from './components/helpers';
 import Ls from './service/Ls';
 import Echo from "laravel-echo";
+import Notifications from 'vue-notification';
 window.Pusher = require("pusher-js");
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: "ac01d8b0ce970cd77c68",
-    cluster: "ap3",
+    key: "3b47761c528968900ea5",
+    cluster: "ap1",
     encrypted: true,
     auth: {
         headers: {
@@ -34,14 +35,17 @@ $.fn.getFormData = function(options) {
     return formData.concat(serialized ? serialized.toArray() : []);
 }
 
+Vue.component('comment', CommentComponent);
+
 Vue.prototype.__ = key => {
     return window.trans[key] !== undefined ? window.trans[key] : key;
 };
 
 Vue.prototype.linkify = linkify;
 
-Vue.component('comment', CommentComponent);
+Vue.use(Notifications);
 Vue.use(VueToastr);
+
 const app = new Vue({
     el: '#bb-comment'
 });

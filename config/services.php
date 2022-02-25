@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'facebook' => [
+        'client_id' => '679273986756373',
+        'client_secret' => 'e5426fd0d2cf2112c40b379072367608',
+        'redirect' => 'https://listingpages.realestate/callback/',
+    ],
+
 ];

@@ -10,6 +10,7 @@ return [
     'remember-me' => 'Ghi nhớ tài khoản',
     'login-title' => 'Đăng nhập',
     'login-cta' => 'Đăng nhập',
+    'login-facebook' => 'Đăng nhập Facebook',
     'register-title' => 'Đăng ký',
     'register-cta' => 'Đăng ký',
     'forgot-password-cta' => 'Quên mật khẩu?',

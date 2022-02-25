@@ -12807,8 +12807,8 @@ Object.defineProperty(exports, "RssHandler", ({ enumerable: true, get: function 
 
 let urlAlphabet =
   'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
-let customAlphabet = (alphabet, size) => {
-  return () => {
+let customAlphabet = (alphabet, defaultSize = 21) => {
+  return (size = defaultSize) => {
     let id = ''
     let i = size
     while (i--) {

@@ -5,10 +5,12 @@
  */
 
 import ActivityLogComponent from './components/dashboard/ActivityLogComponent';
+import InviteComponent from './components/dashboard/InviteComponent';
 import PackagesComponent from './components/dashboard/PackagesComponent';
 import PaymentHistoryComponent from './components/dashboard/PaymentHistoryComponent';
 import FacilitiesComponent from './components/FacilitiesComponent';
 import Vue from 'vue';
+import Notifications from 'vue-notification';
 
 window.axios = require('axios');
 
@@ -21,6 +23,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 Vue.component('activity-log-component', ActivityLogComponent);
+Vue.component('invite-component', InviteComponent);
 Vue.component('packages-component', PackagesComponent);
 Vue.component('payment-history-component', PaymentHistoryComponent);
 Vue.component('facilities-component', FacilitiesComponent);
@@ -36,6 +39,7 @@ Vue.prototype.__ = (key) => {
 import sanitizeHTML from 'sanitize-html';
 
 Vue.prototype.$sanitize = sanitizeHTML;
+Vue.use(Notifications)
 
 const app = new Vue({
     el: '#app-real-estate'

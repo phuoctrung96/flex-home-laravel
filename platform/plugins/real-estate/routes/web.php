@@ -170,6 +170,9 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
                         ->name('register');
                     Route::post('register', 'RegisterController@register')
                         ->name('register.post');
+                    
+                    Route::get('redirect', 'AuthFacebookController@redirect')->name('redirect');
+                    Route::get('callback', 'AuthFacebookController@callback')->name('callback');
 
                     Route::get('verify', 'RegisterController@getVerify')
                         ->name('verify');

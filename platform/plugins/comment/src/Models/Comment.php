@@ -5,6 +5,7 @@ namespace Botble\Comment\Models;
 use Botble\Base\Traits\EnumCastable;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Models\BaseModel;
+use Illuminate\Support\Facades\Auth;
 
 class Comment extends BaseModel
 {
@@ -113,6 +114,28 @@ class Comment extends BaseModel
             return $this->likes()->where(['user_id' => auth()->guard(COMMENT_GUARD)->id()])->exists();
         }
         return false;
+    }
+
+    public static function getHeartInfo($email){    
+        $id = CommentUser::where(['email' => $email])->pluck('id');        
+        if($id!='[]'){
+            $heartCount = Comment::where(['user_id' => $id])->sum('like_count');
+        }else{
+            $heartCount = 0;
+        }
+        
+        return $heartCount;        
+    }
+
+    public static function getReplyInfo($email){    
+        $id = CommentUser::where(['email' => $email])->pluck('id');        
+        if($id!='[]'){
+            $replyCount = Comment::where(['user_id' => $id])->sum('reply_count');
+        }else{
+            $replyCount = 0;
+        }
+        
+        return $replyCount;        
     }
 
     protected static function boot()

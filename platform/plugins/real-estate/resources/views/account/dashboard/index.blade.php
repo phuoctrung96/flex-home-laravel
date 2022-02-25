@@ -8,17 +8,42 @@
             <div class="sidebar-profile">
               <div class="avatar-container mb-2">
                 <div class="profile-image">
-                  <div class="avatar-view mt-card-avatar mt-card-avatar-circle" style="max-width: 150px">
+                  <div class="avatar-view mt-card-avatar mt-card-avatar-circle" style="max-width: 150px; margin:auto;">
                     <img src="{{ $user->avatar->url ? RvMedia::getImageUrl($user->avatar->url, 'thumb') : $user->avatar_url }}" alt="{{ $user->name }}" class="br-100" style="width: 150px;">
                     <div class="mt-overlay br2">
                       <span><i class="fa fa-edit"></i></span>
                     </div>
                   </div>
                 </div>
+                <div class="f4 b">{{ $user->name }}</div>
+                <div class="profile-status">                  
+                  <div class="profile-item"> 
+                    <span>{{$heartCount}}</span>
+                    <img src="https://demo.listing-pages.com/wp-content/plugins/listing-pages-buyer/assets/eye (1).png" width="18px" alt="Listings Viewed">
+                  </div>                  
+                  <div class="profile-item"> 
+                    <span>{{$replyCount}}</span>
+                    <img src="https://demo.listing-pages.com/wp-content/plugins/listing-pages-buyer/assets/comment-png-3.png" width="18px" alt="Commented">
+                  </div>
+                </div>                
               </div>
-              <div class="f4 b">{{ $user->name }}</div>
-              <div class="f6 mb3 light-gray-text">
-                <i class="fas fa-envelope mr2"></i><a href="mailto:{{ $user->email }}" class="gray-text">{{ $user->email }}</a>
+              
+              <div class="f6 mb3 type">
+                <h3>{{($user->type == 2)?'Buyer User':'Agent User'}}</h3>
+              </div>
+              <div class="form-group">
+                <div class="content">Name</div> 
+                <div class="light-gray-text">{{ $user->name }}</div>
+              </div>
+              <div class="form-group">
+                <div class="content">Email</div>
+                <div class="light-gray-text">
+                  <i class="fas fa-envelope mr2"></i><a href="mailto:{{ $user->email }}" class="gray-text">{{ $user->email }}</a>
+                </div> 
+              </div>
+              <div class="form-group">
+                <div class="content">Phone</div> 
+                <div class="light-gray-text">{{ $user->phone }}</div>
               </div>
               <div class="mb3">
                 <div class="light-gray-text mb2">
@@ -77,7 +102,26 @@
                   </div>
               </div>
               <div id="app-real-estate">
-                    <activity-log-component default-active-tab="activity-logs"></activity-log-component>
+                <invite-component :user="{{ $user }}"></invite-component>
+                <activity-log-component default-active-tab="activity-logs"></activity-log-component>                    
+              </div>
+              <div>
+                <div class="f6 mb3 type">
+                  <h3>Registration Profile</h3>
+                </div>
+                <div class="form-group">                
+                  <div class="light-gray-text">How soon do you plan to move ?</div>
+                </div>
+                <div class="form-group">                
+                  <div class="light-gray-text">Are You working with real estate agent?</div>
+                  <div class="content">Not yet assigned</div> 
+                </div>
+                <div class="form-group">                
+                  <div class="light-gray-text">How would you describe your situation??</div>
+                </div>
+                <div class="form-group">                
+                  <div class="light-gray-text">Please describe your reason for moving?</div>
+                </div>
               </div>
           </div>
       </div>

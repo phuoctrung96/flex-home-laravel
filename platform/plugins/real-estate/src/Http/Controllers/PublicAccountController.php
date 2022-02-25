@@ -40,6 +40,8 @@ use Illuminate\View\View;
 use RealEstateHelper;
 use RvMedia;
 use SeoHelper;
+use Botble\Comment\Models\Comment;
+use Botble\Comment\Http\Controllers\API\CommentFrontController;
 
 class PublicAccountController extends Controller
 {
@@ -47,7 +49,7 @@ class PublicAccountController extends Controller
      * @var AccountInterface
      */
     protected $accountRepository;
-
+    public $comment;
     /**
      * @var AccountActivityLogInterface
      */
@@ -69,12 +71,13 @@ class PublicAccountController extends Controller
         Repository $config,
         AccountInterface $accountRepository,
         AccountActivityLogInterface $accountActivityLogRepository,
-        MediaFileInterface $fileRepository
+        MediaFileInterface $fileRepository,
+        Comment $comment
     ) {
         $this->accountRepository = $accountRepository;
         $this->activityLogRepository = $accountActivityLogRepository;
         $this->fileRepository = $fileRepository;
-
+        $this->comment = $comment;
         Assets::setConfig($config->get('plugins.real-estate.assets'));
     }
 
@@ -84,7 +87,8 @@ class PublicAccountController extends Controller
     public function getDashboard()
     {
         $user = auth('account')->user();
-
+        $heartCount = CommentFrontController::getUserHeartData($user->email);                
+        $replyCount = CommentFrontController::getUserReplyData($user->email);                
         SeoHelper::setTitle(auth('account')->user()->name);
 
         Assets::addScriptsDirectly([
@@ -92,7 +96,7 @@ class PublicAccountController extends Controller
             'vendor/core/plugins/real-estate/libraries/cropper.js',
         ]);
 
-        return view('plugins/real-estate::account.dashboard.index', compact('user'));
+        return view('plugins/real-estate::account.dashboard.index', compact('user','heartCount','replyCount'));
     }
 
     /**

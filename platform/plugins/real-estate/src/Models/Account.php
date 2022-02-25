@@ -32,6 +32,7 @@ class Account extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'facebook_id',
         'first_name',
         'last_name',
         'username',
@@ -43,6 +44,7 @@ class Account extends Authenticatable
         'description',
         'gender',
         'company',
+        'type',
     ];
 
     /**

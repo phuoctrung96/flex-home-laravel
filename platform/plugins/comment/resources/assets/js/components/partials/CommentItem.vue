@@ -1,5 +1,5 @@
 <template>
-    <div class="bb-comment-item" :class="{'is-sending': comment.isSending}">
+    <div class="bb-comment-item" v-show="data.userData && !deleted" :class="{'is-sending': comment.isSending}">
         <div class="d-flex">
             <avatar :user="comment.user"></avatar>
 
@@ -33,10 +33,10 @@
                     </div>
 
                     <div class="mt-3 mb-4" v-if="showReply">
-                        <comment-box :parent-id="comment.id" :on-success="onPostCommentSuccess" auto-focus="true" />
+                        <comment-box :parent-id="comment.id" auto-focus=true />
                     </div>
                 </div>
-
+                 {{comment.status}}
                 <!-- Edit form -->
                 <comment-box
                     auto-focus="true"
@@ -47,6 +47,7 @@
                     :on-cancel="onCancel"
                     :parent-id="comment.parent_id"
                     :comment-id="comment.id"
+                    :status = "comment.status"
                 />
 
 
@@ -75,7 +76,7 @@ import CommentBox from "./CommentBox";
 import UserName from "./UserName";
 import StarRating from './StarRating';
 import Http from '../../service/http';
-
+import Ls from '../../service/Ls';
 export default {
     name: 'CommentItem',
     data() {
@@ -84,6 +85,8 @@ export default {
             comments: [],
             attrs: {},
             showEdit: false,
+            activePage: false,
+            deleted: false,
         }
     },
     components: {
@@ -104,6 +107,29 @@ export default {
         }
     },
     mounted() {
+        var self = this;
+        window.Echo.channel('post')
+            .listen('.Botble\\Comment\\Events\\NewCommentEvent', (e) => {
+                if(e.comment.parent_id == this.comment.id){
+                    self.comments.unshift(e.comment);
+                }
+            });
+            window.Echo.channel('like')
+            .listen('.Botble\\Comment\\Events\\NewLikeEvent', (e) => {
+
+                if( self.comment.id == e.commentId && !self.activePage){
+                    self.comment.liked = !self.comment.liked;
+                    self.comment.like_count += e.liked ? 1 : -1;
+                }
+            });
+            window.Echo.channel('delete')
+            .listen('.Botble\\Comment\\Events\\DeleteCommentEvent', (e) => {
+                if(e.id == self.comment.id){
+                    self.deleted = true;
+                    self.attrs.count_all -= 1;
+                }
+            });
+
         const rep = this.comment.rep;
         if (rep && rep.data) {
             this.comments = rep.data.reverse();
@@ -198,6 +224,7 @@ export default {
             })
         },
         onLike() {
+            this.activePage = true;
             this.comment.liked = !this.comment.liked;
 
             this.comment.like_count += this.comment.liked ? 1 : -1;

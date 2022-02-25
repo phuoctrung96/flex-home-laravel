@@ -11,6 +11,7 @@ return [
     'remember-me' => 'Remember Me',
     'login-title' => 'Login',
     'login-cta' => 'Login',
+    'login-facebook' => 'Login with Facebook',
     'register-title' => 'Register',
     'register-cta' => 'Register',
     'forgot-password-cta' => 'Forgot Your Password?',

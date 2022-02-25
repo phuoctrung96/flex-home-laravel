@@ -53,6 +53,12 @@
                             </button>
                         </div>
 
+                        <div class="form-group">
+                            
+                            <a href="{{ route('public.account.redirect') }}" class="btn btn-blue btn-full fw6">{{ trans('plugins/real-estate::dashboard.login-facebook') }}</a>
+                            
+                        </div>
+
                         <div class="form-group text-center">
                             <p>{{ __("Don't have an account?") }} <a href="{{ route('public.account.register') }}" class="d-block d-sm-inline-block text-sm-left text-center">{{ __('Register a new account') }}</a></p>
                         </div>

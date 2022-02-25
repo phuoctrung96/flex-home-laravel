@@ -83,6 +83,18 @@
                                    placeholder="{{ trans('plugins/real-estate::dashboard.password-confirmation') }}">
                         </div>
 
+                        <div class="form-group" style="text-align:center; padding:10px">
+                            <h5 class="padding-0 mb-20 mt-20">Registration Profile</h5>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type">Type of User</label>                            
+                            <select class="form-control" name="type">
+                                <option value="1">Agent</option>
+                                <option value="2">Buyer</option>
+                            </select>
+                        </div>
+
                         @if (is_plugin_active('captcha') && setting('enable_captcha') && setting('real_estate_enable_recaptcha_in_register_page', 0))
                             <div class="form-group mb-3">
                                 {!! Captcha::display() !!}

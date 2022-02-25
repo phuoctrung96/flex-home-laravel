@@ -7,6 +7,7 @@ namespace Botble\Comment\Http\Controllers\API;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Comment\Models\Comment;
+use Botble\Comment\Models\CommentUser;
 use Botble\Comment\Repositories\Interfaces\CommentInterface;
 use Botble\Comment\Repositories\Interfaces\CommentLikeInterface;
 use Botble\Comment\Repositories\Interfaces\CommentRatingInterface;
@@ -122,6 +123,16 @@ class CommentFrontController extends BaseController
         return $this->response
             ->setData($response);
 
+    }
+
+    public static function getUserHeartData($email){
+        $heartCount = Comment::getHeartInfo($email);
+        return $heartCount;
+    }
+
+    public static function getUserReplyData($email){
+        $replyCount = Comment::getReplyInfo($email);
+        return $replyCount;
     }
 
     /**
@@ -268,5 +279,14 @@ class CommentFrontController extends BaseController
             'reference'         => 'required',
             'comment'           => 'required|min:5'
         ]);
+    }
+    public function usercheck(Request $request) {
+        $email = $request->input('data');
+        if (CommentUser::where('email', $email)->exists()) {
+            return $this->response->setData(true);
+        }
+        if (CommentUser::where('email', $email)->doesntExist()) {
+            return $this->response->setData(false);
+        }
     }
 }

@@ -37,25 +37,8 @@
             :loginWithGuards="loginWithGuards"
         ></login-form>
 
-        <invite-form
-            :show.sync="showInviteForm"
-            :on-close="closeModalInvite"
-            :email-data="getUser"
-        ></invite-form>
-
-        <div
-            class="bb-comment-footer d-flex justify-content-center"
-            v-if="reactive.attrs"
-        >
-            <button
-                v-if="reactive.attrs.last_page > reactive.attrs.current_page"
-                @click="loadMoreComments"
-                :class="
-                    'btn btn-secondary' + (isLoadMore ? ' button-loading' : '')
-                "
-            >
-                {{ __("Load More") }}
-            </button>
+        <div class="bb-comment-footer d-flex justify-content-center" v-if="reactive.attrs">
+            <button v-if="reactive.attrs.last_page > reactive.attrs.current_page" @click="loadMoreComments" :class="'btn btn-secondary' + (isLoadMore ? ' button-loading' : '')">{{ __('Load More') }}</button>
         </div>
 
         <div class="bb-comment-loading" v-if="isSoftLoading">
@@ -63,10 +46,12 @@
         </div>
 
         <comment-footer v-if="copyright" :text="copyright" />
+        <notifications group="foo" />
     </div>
 </template>
 
 <script>
+import Notifications from 'vue-notification'
 import CommentBox from "./partials/CommentBox";
 import CommentItem from "./partials/CommentItem";
 import CommentHeader from "./partials/CommentHeader";
@@ -182,7 +167,7 @@ export default {
             var self = this;
             window.Echo.channel('comment')
             .listen('.Botble\\Comment\\Events\\NewCommentEvent', (e) => {
-                console.log(this.reactive.userData);
+                console.log(this.reactive.userData);                
                 console.log(e);
                 if (self.reactive.userData.email !== e.commentUser.email) {
                     self.reactive.attrs.count_all += 1;
