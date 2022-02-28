@@ -41,28 +41,27 @@ class AuthFacebookController extends Controller
 
     public function callback()
     {
-        // dd(Socialite::driver('facebook')->user());
+
         try {
-            $user = Socialite::driver('facebook')->user();
+            $user = Socialite::driver('facebook')->stateless()->user();
             $saveUser = [
                 'facebook_id' => $user->getId(),
                 'first_name' => $user->getName(),
                 'last_name' => $user->getName(),
                 'username' => $user->getName(),
                 'email' => $user->getEmail(),
-                'password' => Hash::make($user->getName().'@'.$user->getId())
+                'password' => Hash::make($user->getName().'@'.$user->getId()),
+                'created_at' => now(),
             ];
-            //$this->accountRepository->createOrUpdate($saveUser,['facebook_id' => $user->getId()]);
-            //$this->accountRepository->createOrUpdate($saveUser);
+
             DB::table('re_accounts')
                 ->updateOrInsert([
                     'facebook_id' => $user->getId(),
                     'type' => 2], $saveUser);
-            
+
+            // find user by facebook_id and login
             $this->guard()->login($this->accountRepository->getFirstBy(['facebook_id' => $user->getId()]));
 
-            // $this->guard()->login($saveUser);
-            //auth()->login($saveUser);
             return redirect()->to('/projects');
         } catch (\Throwable $th) {
             throw $th;
