@@ -43,7 +43,7 @@ class AuthFacebookController extends Controller
     {
         // dd(Socialite::driver('facebook')->user());
         try {
-            $user = Socialite::driver('facebook')->user();
+            $user = Socialite::driver('facebook')->stateless()->user();
             $saveUser = [
                 'facebook_id' => $user->getId(),
                 'first_name' => $user->getName(),
@@ -58,7 +58,7 @@ class AuthFacebookController extends Controller
                 ->updateOrInsert([
                     'facebook_id' => $user->getId(),
                     'type' => 2], $saveUser);
-            
+
             $this->guard()->login($this->accountRepository->getFirstBy(['facebook_id' => $user->getId()]));
 
             // $this->guard()->login($saveUser);
