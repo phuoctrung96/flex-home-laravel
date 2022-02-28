@@ -9523,12 +9523,9 @@ class NoWorkResult {
       this.error = error
     }
 
-    if (this.error) {
-      throw this.error
-    } else {
-      this._root = root
-      return root
-    }
+    this._root = root
+
+    return root
   }
 
   get messages() {
@@ -10173,12 +10170,10 @@ class Parser {
     if (brackets.length > 0) this.unclosedBracket(bracket)
 
     if (end && colon) {
-      if (!customProperty) {
-        while (tokens.length) {
-          token = tokens[tokens.length - 1][0]
-          if (token !== 'space' && token !== 'comment') break
-          this.tokenizer.back(tokens.pop())
-        }
+      while (tokens.length) {
+        token = tokens[tokens.length - 1][0]
+        if (token !== 'space' && token !== 'comment') break
+        this.tokenizer.back(tokens.pop())
       }
       this.decl(tokens, customProperty)
     } else {
@@ -10244,15 +10239,7 @@ class Parser {
       node.raws.before += node.prop[0]
       node.prop = node.prop.slice(1)
     }
-
-    let firstSpaces = []
-    let next
-    while (tokens.length) {
-      next = tokens[0][0]
-      if (next !== 'space' && next !== 'comment') break
-      firstSpaces.push(tokens.shift())
-    }
-
+    let firstSpaces = this.spacesAndCommentsFromStart(tokens)
     this.precheckMissedSemicolon(tokens)
 
     for (let i = tokens.length - 1; i >= 0; i--) {
@@ -10286,12 +10273,12 @@ class Parser {
     }
 
     let hasWord = tokens.some(i => i[0] !== 'space' && i[0] !== 'comment')
-
+    this.raw(node, 'value', tokens)
     if (hasWord) {
-      node.raws.between += firstSpaces.map(i => i[1]).join('')
-      firstSpaces = []
+      node.raws.between += firstSpaces
+    } else {
+      node.value = firstSpaces + node.value
     }
-    this.raw(node, 'value', firstSpaces.concat(tokens), customProperty)
 
     if (node.value.includes(':') && !customProperty) {
       this.checkMissedSemicolon(tokens)
@@ -10439,26 +10426,38 @@ class Parser {
     if (node.type !== 'comment') this.semicolon = false
   }
 
-  raw(node, prop, tokens, customProperty) {
+  raw(node, prop, tokens) {
     let token, type
     let length = tokens.length
     let value = ''
     let clean = true
     let next, prev
+    let pattern = /^([#.|])?(\w)+/i
 
     for (let i = 0; i < length; i += 1) {
       token = tokens[i]
       type = token[0]
-      if (type === 'space' && i === length - 1 && !customProperty) {
-        clean = false
-      } else if (type === 'comment') {
+
+      if (type === 'comment' && node.type === 'rule') {
         prev = tokens[i - 1]
         next = tokens[i + 1]
-        if (prev && next && prev[0] !== 'space' && next[0] !== 'space') {
+
+        if (
+          prev[0] !== 'space' &&
+          next[0] !== 'space' &&
+          pattern.test(prev[1]) &&
+          pattern.test(next[1])
+        ) {
           value += token[1]
         } else {
           clean = false
         }
+
+        continue
+      }
+
+      if (type === 'comment' || (type === 'space' && i === length - 1)) {
+        clean = false
       } else {
         value += token[1]
       }
@@ -10900,7 +10899,7 @@ let Root = __webpack_require__(/*! ./root */ "./node_modules/postcss/lib/root.js
 
 class Processor {
   constructor(plugins = []) {
-    this.version = '8.4.6'
+    this.version = '8.4.5'
     this.plugins = this.normalize(plugins)
   }
 
@@ -12856,9 +12855,10 @@ sanitizeHtml.defaults = {
   disallowedTagsMode: 'discard',
   allowedAttributes: {
     a: [ 'href', 'name', 'target' ],
-    // We don't currently allow img itself by default, but
-    // these attributes would make sense if we did.
-    img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading' ]
+    // We don't currently allow img itself by default, but this
+    // would make sense if we did. You could add srcset here,
+    // and if you do the URL is checked for safety
+    img: [ 'src' ]
   },
   // Lots of these won't come up by default because we don't allow them
   selfClosing: [ 'img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta' ],
@@ -27851,8 +27851,8 @@ Vue.compile = compileToFunctions;
 
 let urlAlphabet =
   'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
-let customAlphabet = (alphabet, defaultSize = 21) => {
-  return (size = defaultSize) => {
+let customAlphabet = (alphabet, size) => {
+  return () => {
     let id = ''
     let i = size
     while (i--) {
